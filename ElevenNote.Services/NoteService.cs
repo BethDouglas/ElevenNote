@@ -17,6 +17,14 @@ namespace ElevenNote.Services
             _userId = userId;
         }
 
+        private NoteEntity GetNoteFromDatabase(ElevenNoteDbContext context, int noteId)
+        {
+            return
+                context
+                    .Notes
+                    .SingleOrDefault(e => e.NoteId == noteId && e.OwnerId == _userId);
+        }
+
         public IEnumerable<NoteListItemModel> GetNotes()
         {
             using (var ctx = new ElevenNoteDbContext())
@@ -26,7 +34,7 @@ namespace ElevenNote.Services
                         .Notes
                         .Where(e => e.OwnerId == _userId)
                         .Select(
-                            e => 
+                            e =>
                                 new NoteListItemModel
                                 {
                                     NoteId = e.NoteId,
@@ -37,7 +45,7 @@ namespace ElevenNote.Services
                         .ToArray();
             }
         }
-        
+
         public bool CreateNote(NoteCreateModel model)
         {
             using (var ctx = new ElevenNoteDbContext())
@@ -63,7 +71,7 @@ namespace ElevenNote.Services
 
             using (var ctx = new ElevenNoteDbContext())
             {
-                entity = GetNoteById(ctx, id);
+                entity = GetNoteFromDatabase(ctx, id);
             }
 
             if (entity == null) return new NoteDetailModel();
@@ -83,7 +91,7 @@ namespace ElevenNote.Services
         {
             using (var ctx = new ElevenNoteDbContext())
             {
-                var entity = GetNoteById(ctx, model.NoteId);
+                var entity = GetNoteFromDatabase(ctx, model.NoteId);
 
                 if (entity == null) return false;
 
@@ -95,19 +103,11 @@ namespace ElevenNote.Services
             }
         }
 
-        private NoteEntity GetNoteById(ElevenNoteDbContext context, int noteId)
-        {
-            return
-                context
-                    .Notes
-                    .SingleOrDefault(e => e.NoteId == noteId && e.OwnerId == _userId);
-        }
-
         public bool DeleteNote(int noteId)
         {
             using (var ctx = new ElevenNoteDbContext())
             {
-                var entity = GetNoteById(ctx, noteId);
+                var entity = GetNoteFromDatabase(ctx, noteId);
 
                 if (entity == null) return false;
 
