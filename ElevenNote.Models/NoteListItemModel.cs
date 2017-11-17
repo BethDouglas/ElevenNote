@@ -10,6 +10,7 @@ namespace ElevenNote.Models
 {
     public class NoteListItemModel
     {
+        [DisplayName("ID #")]
         public int NoteId { get; set; }
 
         public string Title { get; set; }
@@ -18,8 +19,10 @@ namespace ElevenNote.Models
         [DisplayName("Important")]
         public bool IsStarred { get; set; }
 
+        [DisplayName("Created")]
         public DateTime CreatedUtc { get; set; }
 
+        [DisplayName("Modified")]
         public DateTime? ModifiedUtc { get; set; }
     }
 }
